@@ -1,0 +1,8 @@
+== INSTALL ARM UBUNTU ==
+Download http://com.odroid.com/sigong/nf_file_board/nfile_board.php
+$ unxz my-odroid-image.img.xz
+$ sudo dd if=image.img of=/dev/sdb bs=1M conv=fsync
+$ sync
+[boot odroid and login with root password "odroid"]
+root@odroid $ sudo update-rc.d ssh defaults
+$ ssh root@192.168.0.103
