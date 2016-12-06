@@ -1,7 +1,7 @@
 # compile options
 ARM_GXX=arm-linux-gnueabihf-g++
 GXX=g++
-CXX_FLAGS=$(if ${DEBUG},-Wall ,)
+CXX_FLAGS=$(if ${DEBUG},-Wall ,) -O2
 CXX_STD=-std=c++11
 CXX_LIBS= -pthread -ldl
 

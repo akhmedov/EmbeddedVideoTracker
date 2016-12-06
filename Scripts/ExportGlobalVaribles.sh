@@ -44,3 +44,6 @@ export TOOLCH_DIR=$PROJECT_DIR/"Toolchain"
 
 # export toolchain to PATH
 export PATH=$PATH:$TOOLCH_DIR/bin
+
+# export client library
+export LD_LIBRARY_PATH=$OPENCV_X86_DIR/lib

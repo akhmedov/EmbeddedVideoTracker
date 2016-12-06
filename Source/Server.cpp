@@ -4,6 +4,7 @@
  */
 
 #include <opencv2/opencv.hpp>
+#include <opencv2/tracking/tracker.hpp>
 #include <iostream>
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -11,14 +12,19 @@
 #include <net/if.h>
 #include <unistd.h>
 #include <string.h>
+#include <vector>
 
 using namespace cv;
 
 void *display(void *);
+void *scan(void *);
 
 int capDev = 0;
 
-    VideoCapture cap(capDev); // open the default camera
+Ptr<Tracker> tracker = Tracker::create( "TLD" );
+// MIL BOOSTING MEDIANFLOW TLD KCF
+VideoCapture cap(capDev); // open the default camera
+Rect2d roi;
     
 int main(int argc, char** argv)
 {   
@@ -82,9 +88,9 @@ int main(int argc, char** argv)
         exit(1);
     } 
     std::cout << "Connection accepted" << std::endl;
-     pthread_create(&thread_id,NULL,display,&remoteSocket);
+    pthread_create(&thread_id,NULL,display,&remoteSocket);
 
-     //pthread_join(thread_id,NULL);
+    //pthread_join(thread_id,NULL);
 
     }
     //pthread_join(thread_id,NULL);
@@ -95,8 +101,8 @@ int main(int argc, char** argv)
 
 void *display(void *ptr){
     int socket = *(int *)ptr;
-    //OpenCV Code
-    //----------------------------------------------------------
+    // OpenCV Code
+    // ----------------------------------------------------------
 
     Mat img, imgGray;
     img = Mat::zeros(480 , 640, CV_8UC1);   
@@ -118,19 +124,43 @@ void *display(void *ptr){
         
     std::cout << "Image Size:" << imgSize << std::endl;
 
+	// Tracking stuff ====================================================
+	Rect2d roi_center;
+	roi = Rect2d(320-2*32,240-2*24,2*64,2*48);
+	roi_center = Rect2d(320-32,240-24,64,48);
+
+	cap >> img;
+	rectangle( img, roi, Scalar( 255, 255, 255 ), 2, 5 );
+	tracker->init(img,roi);
+
+	pthread_t scan_thread;
+	pthread_create(&scan_thread,NULL,scan,&socket);
+
+    //====================================================================
+
     while(1) {
                 
-            /* get a frame from camera */
-                cap >> img;
-            
-                //do video processing here 
-                cvtColor(img, imgGray, CV_BGR2GRAY);
+        /* get a frame from camera */
+        cap >> img;
+        rectangle( img, roi_center, Scalar( 255, 255, 255 ), 1, 1 );
+        rectangle( img, roi, Scalar( 255, 255, 255 ), 2, 1 );
+        cvtColor(img, imgGray, CV_BGR2GRAY);
 
-                //send processed image
-                if ((bytes = send(socket, imgGray.data, imgSize, 0)) < 0){
-                     std::cerr << "bytes = " << bytes << std::endl;
-                     break;
-                } 
-    }
+        //send processed image
+        if ((bytes = send(socket, imgGray.data, imgSize, 0)) < 0){
+             std::cerr << "bytes = " << bytes << std::endl;
+             break;
+        } 
+}
 
+}
+
+
+void *scan(void *ptr)
+{
+	Mat img;
+	while(1) {
+		cap >> img;
+		tracker->update(img,roi);
+	}
 }
