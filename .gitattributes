@@ -1,0 +1,13 @@
+Archive/buildroot-2016.08.1.tar.gz filter=lfs diff=lfs merge=lfs -text
+Archive/gcc-linaro-arm-linux-gnueabihf.tar filter=lfs diff=lfs merge=lfs -text
+Archive/ilmbase-2.2.0.tar.gz filter=lfs diff=lfs merge=lfs -text
+Archive/jasper-2.0.0.tar.gz filter=lfs diff=lfs merge=lfs -text
+Archive/jpeg-9b.tar.gz filter=lfs diff=lfs merge=lfs -text
+Archive/libpng-1.6.26.tar.xz filter=lfs diff=lfs merge=lfs -text
+Archive/libwebp-0.5.1.tar.gz filter=lfs diff=lfs merge=lfs -text
+Archive/opencv-3.1.0.zip filter=lfs diff=lfs merge=lfs -text
+Archive/openexr-2.2.0.tar.gz filter=lfs diff=lfs merge=lfs -text
+Archive/openjpeg-2.1.2.tar.gz filter=lfs diff=lfs merge=lfs -text
+Archive/tiff-3.8.2.tar.gz filter=lfs diff=lfs merge=lfs -text
+Archive/ubuntu-16.04-minimal-odroid.img filter=lfs diff=lfs merge=lfs -text
+Archive/zlib-1.2.8.tar.gz filter=lfs diff=lfs merge=lfs -text
